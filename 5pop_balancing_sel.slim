@@ -1,0 +1,66 @@
+// Keywords: gene interaction
+
+initialize() {
+	initializeMutationRate(1e-7);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "f", 0.5);  // mutation A
+	m2.convertToSubstitution = F;
+	initializeMutationType("m3", 0.5, "f", 0.5);  // mutation B
+	m3.convertToSubstitution = F;
+	initializeMutationType("m4", 0.5, "f", 0.5);  // mutation C
+	m4.convertToSubstitution = F;
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeRecombinationRate(1e-8);
+}
+1 {
+	subpopCount = 5; 
+	for (i in 1:subpopCount)
+	sim.addSubpop(i, 500);
+	for (i in 2:subpopCount)
+	sim.subpopulations[i-1].setMigrationRates(i-1, 0.01);
+	for (i in 1:(subpopCount-1))
+	sim.subpopulations[i-1].setMigrationRates(i+1, 0.01);
+
+}
+100 late() {
+	sample(p1.genomes, 20).addNewDrawnMutation(m2, 10000);  // add A
+	sample(p3.genomes, 20).addNewDrawnMutation(m3, 12000);  // add B
+	sample(p5.genomes, 20).addNewDrawnMutation(m4, 14000);  // add C
+   //Do we want a mutation that is sampled in one pop to be deleterious in another as well? or only deleterious when homozygous?
+   
+}
+modifyChild() {
+	childGenomes = c(childGenome1, childGenome2);
+	mutACount = sum(childGenomes.countOfMutationsOfType(m2));
+	//cat("mutAcount" + mutACount + "\n" );
+	
+	mutBCount = sum(childGenomes.countOfMutationsOfType(m3));
+	//cat("mutBcount" + mutBCount + "\n" );
+
+   mutCCount = sum(childGenomes.countOfMutationsOfType(m4));
+
+	//then we remove homozygous individuals at either A/B/C,  A & B & C or A | B |C ? 
+	//if ((mutACount == 2) & (mutBCount == 2))
+	//if ((mutACount == 2) & (mutBCount == 2) & (mutCCount == 2) )
+	if ((mutACount == 2) | (mutBCount == 2) | (mutCCount == 2) )
+
+		return F;
+	return T;
+}
+10000 late() {
+	pi1 = calcHeterozygosity(p1.genomes);
+	pi2 = calcHeterozygosity(p2.genomes);
+	pi3 = calcHeterozygosity(p3.genomes);
+	pi4 = calcHeterozygosity(p4.genomes);
+	pi5 = calcHeterozygosity(p5.genomes);
+
+	cat("pi1 :" +  pi1 + "\n" );
+	cat("pi2 :" +  pi2 + "\n" );
+	cat("pi3 :" +  pi3 + "\n" );
+	cat("pi4 :" +  pi4 + "\n" );
+	cat("pi5 :" +  pi5 + "\n" );
+
+
+ 
+	sim.simulationFinished(); }
