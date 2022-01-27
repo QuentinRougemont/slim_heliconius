@@ -1,9 +1,15 @@
 // Keywords: migration, dispersal, fitness()
+//assumption for genomics:
+//mutation rate from Keightley et al: µ= 2.9 × 10−9
+//assumed inital r = 1e-08 and rescaled using 1/2*(1-(1-2r)^n)
+//assumed Nc = 1e6
+//rescale all by a factor of 100
+//Size of supergene ~1.5mb on ~300mb so we rescale to a 5kb locus on a 1mb block 
 
 initialize() {
-  	defineGlobal("MU", 1e-7);
-   defineGlobal("L", 1e5);  //will be set to 1e7 later
-   defineGlobal("R", 1e-8);
+	defineGlobal("MU", 2.9e-7);
+	defineGlobal("L", 1e5);  //will be set to 1e7 later
+	defineGlobal("R", 9.99999e-07);
 	initializeMutationRate(MU);
 	initializeMutationType("m1", 0.5, "f", 0.0);
 	initializeMutationType("m2", 1.0, "f", 0.5);  // introduced mutation
