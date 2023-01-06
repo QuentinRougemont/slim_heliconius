@@ -28,7 +28,7 @@ rep=$(sed -n "${SLURM_ARRAY_TASK_ID}p" $interval )
 
 
 #---------------------------#
-if [[ $assort == "disassorative" ]]
+if [[ $assort == "disassortative" ]]
 then
     ./00_scripts/run_slim_dissasortative_mating.sh $rep $mig $assortF $LAF
 elif [[ $assort == "assortative" ]]
